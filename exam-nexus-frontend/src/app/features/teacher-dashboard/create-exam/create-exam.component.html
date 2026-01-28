@@ -1,0 +1,255 @@
+<div class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    
+    <div class="md:flex md:items-center md:justify-between mb-8">
+      <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+          Create New Exam
+        </h2>
+      </div>
+      <button routerLink="/teacher/dashboard" class="text-indigo-600 hover:text-indigo-900 font-medium">
+        &larr; Back to Dashboard
+      </button>
+    </div>
+
+    <div class="bg-white shadow sm:rounded-lg overflow-hidden">
+      <div class="p-6 space-y-6">
+        
+        <div class="flex justify-center mb-6">
+          <span class="relative z-0 inline-flex shadow-sm rounded-md">
+            <button 
+              type="button" 
+              (click)="mode = 'AI'"
+              [class.bg-indigo-600]="mode === 'AI'"
+              [class.text-white]="mode === 'AI'"
+              [class.bg-white]="mode !== 'AI'"
+              [class.text-gray-700]="mode !== 'AI'"
+              class="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 text-sm font-medium focus:z-10 focus:outline-none"
+            >
+              ✨ AI Generator
+            </button>
+            <button 
+              type="button" 
+              (click)="mode = 'MANUAL'"
+              [class.bg-indigo-600]="mode === 'MANUAL'"
+              [class.text-white]="mode === 'MANUAL'"
+              [class.bg-white]="mode !== 'MANUAL'"
+              [class.text-gray-700]="mode !== 'MANUAL'"
+              class="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 text-sm font-medium focus:z-10 focus:outline-none"
+            >
+              ✍️ Manual Entry
+            </button>
+          </span>
+        </div>
+
+        <form [formGroup]="examForm">
+          
+          <div class="bg-gray-50 p-4 rounded-lg mb-6 border border-gray-200">
+            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Exam Configuration</h3>
+            
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+              <div class="sm:col-span-2">
+                <label class="block text-sm font-medium text-gray-700">Exam Title <span class="text-red-500">*</span></label>
+                <input type="text" formControlName="title" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Start Date & Time <span class="text-red-500">*</span></label>
+                <input type="datetime-local" formControlName="start_time" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700">End Date & Time <span class="text-red-500">*</span></label>
+                <input type="datetime-local" formControlName="end_time" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              </div>
+
+              <div class="sm:col-span-2 bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-2">
+                <div class="flex items-start">
+                  <div class="flex items-center h-5">
+                    <input 
+                      id="auto_publish" 
+                      formControlName="auto_publish" 
+                      type="checkbox" 
+                      class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                    >
+                  </div>
+                  <div class="ml-3 text-sm">
+                    <label for="auto_publish" class="font-medium text-gray-700">Auto-Publish Exam</label>
+                    <p class="text-gray-500">
+                      If checked, the exam will automatically go live at the <b>Start Time</b>. 
+                      <br>
+                      <span class="text-yellow-700 font-bold text-xs">Requirement: Start time must be at least 2 hours from now.</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="sm:col-span-2">
+                <label class="block text-sm font-medium text-gray-700">Instructions</label>
+                <textarea formControlName="instructions" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-6 border-gray-200">
+
+          <div *ngIf="mode === 'AI'" class="space-y-6">
+            
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Number of Questions</label>
+                <input type="number" formControlName="question_count" min="1" max="20" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Marks per Question</label>
+                <input type="number" formControlName="marks_per_question" min="1" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Difficulty</label>
+                <select formControlName="difficulty" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                  <option>Easy</option>
+                  <option>Medium</option>
+                  <option>Hard</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="bg-indigo-50 border-l-4 border-indigo-400 p-4 mt-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm text-indigo-700">AI Context: Upload a PDF/Image OR paste text below.</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mt-4">Paste Content</label>
+              <textarea formControlName="textContent" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+            </div>
+
+            <div>
+               <label class="block text-sm font-medium text-gray-700 mt-4">Or Upload File</label>
+               <input type="file" (change)="onFileSelected($event)" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
+            </div>
+
+            <div class="flex justify-end pt-5">
+              <button type="button" (click)="generateWithAI()" [disabled]="isGenerating" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:bg-indigo-300">
+                <span *ngIf="isGenerating" class="mr-2 animate-spin">⟳</span>
+                {{ isGenerating ? 'Generating...' : 'Generate Exam' }}
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="mode === 'MANUAL'" formArrayName="manualQuestions">
+            
+            <div class="text-center mb-6">
+              <button type="button" (click)="addQuestion()" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+                + Add Question
+              </button>
+              <button type="button" (click)="openBankModal()" class="inline-flex items-center px-4 py-2 border border-indigo-300 shadow-sm text-sm font-medium rounded-md text-indigo-700 bg-indigo-50 hover:bg-indigo-100">
+    🏦 Import from Bank
+  </button>
+            </div>
+            <div *ngIf="showBankModal" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" (click)="showBankModal = false"></div>
+
+    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Select Questions from Bank</h3>
+
+        <div class="flex space-x-4 mb-4">
+          <select [(ngModel)]="filterSubject" (change)="fetchBankQuestions()" class="border p-2 rounded">
+            <option value="">All Subjects</option>
+            <option value="Math">Math</option>
+            <option value="Physics">Physics</option>
+            <option value="History">History</option>
+          </select>
+          <select [(ngModel)]="filterDifficulty" (change)="fetchBankQuestions()" class="border p-2 rounded">
+            <option value="">All Difficulties</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </div>
+
+        <div class="max-h-96 overflow-y-auto border rounded">
+          <div *ngFor="let q of bankQuestions" 
+               (click)="toggleBankSelection(q)"
+               class="p-3 border-b hover:bg-gray-50 cursor-pointer flex items-start"
+               [class.bg-indigo-50]="selectedBankQuestions.includes(q)">
+            <input type="checkbox" [checked]="selectedBankQuestions.includes(q)" class="mt-1 mr-3">
+            <div>
+              <p class="font-medium text-gray-800">{{ q.question_text }}</p>
+              <div class="text-xs text-gray-500 mt-1">
+                <span class="bg-gray-200 px-1 rounded">{{ q.subject }}</span> • {{ q.difficulty }} • {{ q.points }} pts
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button type="button" (click)="importSelected()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 sm:ml-3 sm:w-auto sm:text-sm">
+          Import ({{ selectedBankQuestions.length }})
+        </button>
+        <button type="button" (click)="showBankModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+            <div *ngFor="let q of manualQuestions.controls; let i = index" [formGroupName]="i" class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 relative">
+              
+              <button type="button" (click)="removeQuestion(i)" class="absolute top-4 right-4 text-red-600 hover:text-red-900 font-bold">
+                &times; Remove
+              </button>
+
+              <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-10">
+                  <label class="block text-sm font-medium text-gray-700">Question {{ i + 1 }}</label>
+                  <input type="text" formControlName="question_text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Type your question here...">
+                </div>
+                
+                <div class="col-span-2">
+                  <label class="block text-sm font-medium text-gray-700">Points</label>
+                  <input type="number" formControlName="points" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+              </div>
+
+              <div class="mt-4 space-y-2" formArrayName="options">
+                <label class="block text-xs font-medium text-gray-500 uppercase">Options (Select the correct answer)</label>
+                
+                <div *ngFor="let opt of getOptions(i).controls; let j = index" [formGroupName]="j" class="flex items-center">
+                  <input 
+                    type="radio" 
+                    [name]="'correct_option_' + i" 
+                    [value]="j" 
+                    [formControl]="getQuestionControl(i, 'correct_option_index')" 
+                    class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                  >
+                  <input type="text" formControlName="text" class="ml-2 flex-1 block w-full border border-gray-300 rounded-md shadow-sm py-1 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Option {{ j + 1 }}">
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="manualQuestions.length > 0" class="flex justify-end pt-5">
+              <button type="button" (click)="saveManualExam()" [disabled]="isSaving" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none disabled:bg-green-300">
+                <span *ngIf="isSaving" class="mr-2 animate-spin">⟳</span>
+                {{ isSaving ? 'Saving...' : 'Save Manual Exam' }}
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

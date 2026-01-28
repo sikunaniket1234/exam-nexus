@@ -1,0 +1,70 @@
+<div class="min-h-screen bg-gray-900 text-white p-10">
+  <h1 class="text-3xl font-bold mb-10 text-center">🚀 ExamNexus Super Admin</h1>
+
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+    
+    <div class="bg-gray-800 p-8 rounded-lg shadow-xl">
+      <h2 class="text-xl font-bold mb-6 text-indigo-400">Onboard New School</h2>
+      
+      <form [formGroup]="onboardForm" (ngSubmit)="createSchool()" class="space-y-4">
+        <div>
+          <label class="block text-sm text-gray-400">School Name</label>
+          <input formControlName="school_name" type="text" class="w-full bg-gray-700 border-none rounded p-2 text-white focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400">Subdomain (ID)</label>
+          <input formControlName="subdomain" type="text" placeholder="e.g. greenwood" class="w-full bg-gray-700 border-none rounded p-2 text-white focus:ring-2 focus:ring-indigo-500">
+          <p class="text-xs text-gray-500 mt-1">This will be their login ID.</p>
+        </div>
+
+        <hr class="border-gray-600 my-4">
+
+        <div>
+          <label class="block text-sm text-gray-400">Admin Name (Principal)</label>
+          <input formControlName="admin_name" type="text" class="w-full bg-gray-700 border-none rounded p-2 text-white focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400">Admin Email</label>
+          <input formControlName="admin_email" type="email" class="w-full bg-gray-700 border-none rounded p-2 text-white focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-400">Default Password</label>
+          <input formControlName="admin_password" type="text" class="w-full bg-gray-700 border-none rounded p-2 text-white focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <button 
+          [disabled]="onboardForm.invalid || isSubmitting"
+          class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded mt-4 transition-colors disabled:bg-gray-600">
+          {{ isSubmitting ? 'Creating...' : 'Launch School' }}
+        </button>
+      </form>
+    </div>
+
+    <div class="bg-gray-800 p-8 rounded-lg shadow-xl">
+      <h2 class="text-xl font-bold mb-6 text-green-400">Active Schools</h2>
+      
+      <div class="overflow-y-auto h-96">
+        <table class="w-full text-left">
+          <thead class="text-gray-400 border-b border-gray-700">
+            <tr>
+              <th class="pb-2">Name</th>
+              <th class="pb-2">Subdomain</th>
+              <th class="pb-2">Joined</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-700">
+            <tr *ngFor="let s of schools" class="hover:bg-gray-700">
+              <td class="py-3">{{ s.name }}</td>
+              <td class="py-3 font-mono text-indigo-300">{{ s.subdomain }}</td>
+              <td class="py-3 text-sm text-gray-400">{{ s.created_at | date }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

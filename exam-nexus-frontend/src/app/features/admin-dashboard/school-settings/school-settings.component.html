@@ -1,0 +1,80 @@
+<div class="min-h-screen bg-gray-900 text-white p-8">
+  
+  <div class="max-w-3xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold">⚙️ School Settings</h1>
+      <button routerLink="/admin/dashboard" class="text-gray-400 hover:text-white transition-colors">
+        &larr; Back to Dashboard
+      </button>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-20">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+    </div>
+
+    <div *ngIf="!isLoading" class="bg-gray-800 rounded-lg shadow-xl p-8 border border-gray-700">
+      
+      <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="space-y-6">
+        
+        <div class="flex items-center space-x-6">
+          <div class="shrink-0">
+            <img 
+              [src]="currentLogoUrl || 'assets/placeholder-school.png'" 
+              alt="School Logo" 
+              class="h-24 w-24 object-cover rounded-full border-4 border-gray-700 bg-gray-600"
+            >
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-400">School Logo</label>
+            <input 
+              type="file" 
+              (change)="onFileSelected($event)" 
+              accept="image/*"
+              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 mt-2 cursor-pointer"
+            />
+            <p class="mt-1 text-xs text-gray-500">PNG, JPG up to 2MB</p>
+          </div>
+        </div>
+
+        <hr class="border-gray-700">
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300">School Name</label>
+          <input 
+            type="text" 
+            formControlName="name" 
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-400">School ID / Subdomain</label>
+          <div class="mt-1 flex rounded-md shadow-sm">
+            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-600 bg-gray-600 text-gray-300 sm:text-sm">
+              https://
+            </span>
+            <input 
+              type="text" 
+              [value]="subdomain + '.examnexus.com'" 
+              disabled
+              class="flex-1 min-w-0 block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-none rounded-r-md text-gray-400 sm:text-sm cursor-not-allowed"
+            >
+          </div>
+          <p class="mt-1 text-xs text-gray-500">Subdomains cannot be changed once created.</p>
+        </div>
+
+        <div class="flex justify-end pt-4">
+          <button 
+            type="submit" 
+            [disabled]="settingsForm.invalid || isSaving"
+            class="ml-3 inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-800 disabled:cursor-not-allowed transition-colors"
+          >
+            {{ isSaving ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>

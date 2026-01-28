@@ -1,0 +1,117 @@
+<div class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto">
+    
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold text-gray-900">🏦 Question Bank</h2>
+      <button routerLink="/teacher/dashboard" class="text-indigo-600 font-medium">&larr; Dashboard</button>
+    </div>
+
+    <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+      <div class="flex border-b">
+        <button (click)="activeTab = 'LIBRARY'" [class.border-b-2]="activeTab === 'LIBRARY'" [class.border-indigo-500]="activeTab === 'LIBRARY'" class="flex-1 py-4 text-center font-medium text-gray-700 hover:bg-gray-50">
+          📚 My Library
+        </button>
+        <button (click)="activeTab = 'MANUAL'" [class.border-b-2]="activeTab === 'MANUAL'" [class.border-indigo-500]="activeTab === 'MANUAL'" class="flex-1 py-4 text-center font-medium text-gray-700 hover:bg-gray-50">
+          ✍️ Add Manually
+        </button>
+        <button (click)="activeTab = 'AI'" [class.border-b-2]="activeTab === 'AI'" [class.border-indigo-500]="activeTab === 'AI'" class="flex-1 py-4 text-center font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100">
+          ✨ AI Generator
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'LIBRARY'" class="space-y-4">
+      <div class="flex justify-end">
+        <select [(ngModel)]="filterSubject" (change)="fetchLibrary()" class="border p-2 rounded bg-white">
+          <option value="">All Subjects</option>
+          <option value="Math">Math</option>
+          <option value="Physics">Physics</option>
+          <option value="History">History</option>
+        </select>
+      </div>
+
+      <div *ngFor="let q of questions" class="bg-white p-4 rounded shadow border-l-4 border-indigo-500">
+        <p class="font-bold text-gray-800">{{ q.question_text }}</p>
+        <div class="mt-2 text-xs text-gray-500 flex space-x-2">
+          <span class="bg-gray-200 px-2 py-1 rounded">{{ q.subject }}</span>
+          <span class="bg-gray-200 px-2 py-1 rounded">{{ q.difficulty }}</span>
+        </div>
+      </div>
+      <div *ngIf="questions.length === 0" class="text-center py-10 text-gray-500">
+        No questions in bank yet. Try AI Generation!
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'MANUAL'" class="bg-white p-6 rounded shadow">
+      <form [formGroup]="manualForm" (ngSubmit)="saveManual()">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Subject</label>
+            <input formControlName="subject" type="text" class="mt-1 block w-full border border-gray-300 rounded p-2">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Difficulty</label>
+            <select formControlName="difficulty" class="mt-1 block w-full border border-gray-300 rounded p-2">
+              <option>Easy</option>
+              <option>Medium</option>
+              <option>Hard</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Question Text</label>
+          <textarea formControlName="question_text" rows="3" class="mt-1 block w-full border border-gray-300 rounded p-2"></textarea>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Options (Select Correct)</label>
+          <div formArrayName="options">
+            <div *ngFor="let opt of manualOptions; let i=index" [formGroupName]="i" class="flex items-center mb-2">
+              <input type="radio" formControlName="correct_index" [value]="i" [attr.name]="'correct_idx'" (change)="manualForm.patchValue({correct_index: i})" class="mr-2">
+              <input formControlName="text" type="text" class="flex-1 border border-gray-300 rounded p-2" placeholder="Option {{i+1}}">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="manualForm.invalid" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">Save to Bank</button>
+      </form>
+    </div>
+
+    <div *ngIf="activeTab === 'AI'" class="bg-white p-6 rounded shadow border border-indigo-100">
+      <div class="text-center mb-6">
+        <h3 class="text-lg font-bold text-indigo-600">✨ Bulk AI Generator</h3>
+        <p class="text-sm text-gray-500">Upload content, and AI will fill your bank instantly.</p>
+      </div>
+
+      <form [formGroup]="aiForm" (ngSubmit)="generateAiQuestions()">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Target Subject</label>
+            <input formControlName="subject" type="text" class="mt-1 block w-full border border-gray-300 rounded p-2">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Number of Questions</label>
+            <input formControlName="question_count" type="number" class="mt-1 block w-full border border-gray-300 rounded p-2">
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Paste Context / Topic</label>
+          <textarea formControlName="textContent" rows="4" class="mt-1 block w-full border border-gray-300 rounded p-2" placeholder="e.g. Newton's laws of motion..."></textarea>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700">Or Upload File (PDF/Image)</label>
+          <input type="file" (change)="onFileSelected($event)" class="mt-1 block w-full">
+        </div>
+
+        <button type="submit" [disabled]="isGenerating" class="w-full bg-indigo-600 text-white py-3 rounded hover:bg-indigo-700 flex justify-center items-center">
+          <span *ngIf="isGenerating" class="animate-spin mr-2">⟳</span>
+          {{ isGenerating ? 'Generating...' : 'Generate & Save to Bank' }}
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
